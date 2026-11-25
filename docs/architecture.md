@@ -46,19 +46,31 @@ flowchart LR
 Registre seu plano aqui antes de editar o código.
 
 - Decisão da camada de apresentação:
+  Implementar as quatro telas em React usando o cliente compartilhado da API. Cada tela deve controlar os estados de carregamento, sucesso, vazio e erro; o carregamento e o vazio devem usar `role="status"`, e os erros devem usar `role="alert"`.
 - Decisão da camada de lógica:
+  Manter as rotas Express como adaptadores HTTP e concentrar validações, consultas e cálculos nos serviços. Validar os `ObjectId` antes da conversão e transformar erros previsíveis em respostas `4xx`, sem depender de autenticação nesta etapa.
 - Decisão da camada de dados:
+  Tornar obrigatórios nos modelos Mongoose os campos exigidos pelos contratos e usar referências Mongoose para os vínculos entre pessoas, equipes e atividades. Popular e manter os dados por meio dos modelos e do seed, sem criar registros por scripts diretos do MongoDB.
 - Abordagem para registro de atividades:
+  Validar `userId`, `teamId`, `type` e `minutes`; confirmar que os registros referenciados existem; calcular `points` e `occurredAt`; e retornar `4xx` para dados inválidos ou referências inexistentes.
 - Abordagem para gerenciamento de equipes:
+  Exigir `name` no cadastro e preservar `name`, `mascot` e integrantes nas equipes criadas e listadas. Manter sincronizado o vínculo entre cada pessoa e sua equipe atual.
 - Abordagem para o placar:
+  Somar os pontos das atividades por equipe, ordenar os totais da maior para a menor e atribuir posições iniciando em `rank: 1`.
 - Abordagem para sugestões de treino:
+  Localizar a pessoa pelo e-mail informado e retornar `404` quando não houver correspondência. Selecionar o foco a partir da meta ou da atividade recente da pessoa e incluir um campo `reason` que explique a recomendação.
 
 ## Plano de testes
 
 Registre os comandos executados e o significado de cada falha.
 
 - Testes da camada de dados: `npm run test:data --prefix octofit-tracker/backend`
+  Os testes verificam os campos obrigatórios e os vínculos dos modelos. O teste de seed deve permanecer aprovado e confirmar que o processamento é idempotente sem alterar dados alheios.
 - Testes da API: `npm run test:api --prefix octofit-tracker/backend`
+  Os testes verificam listagens, criação, validações `4xx`, placar agregado e sugestões por e-mail. Falhas indicam regras ainda pendentes nos serviços ou respostas incorretas das rotas.
 - Testes do frontend: `npm test --prefix octofit-tracker/frontend`
+  Os testes verificam navegação, consulta à API, estados de carregamento, vazio e erro das quatro telas, além da apresentação acessível dos dados.
 - Compilação do backend: `npm run build --prefix octofit-tracker/backend`
+  Confirma a compilação TypeScript das rotas, serviços, modelos e scripts após a implementação da camada lógica e de dados.
 - Compilação do frontend: `npm run build --prefix octofit-tracker/frontend`
+  Confirma a compilação das telas React, do roteamento e do cliente da API.
